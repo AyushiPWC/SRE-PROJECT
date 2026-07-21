@@ -1,0 +1,73 @@
+services:
+
+  database:
+    image: postgres:16-alpine
+    container_name: hotel-booking-database
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sre123
+      POSTGRES_DB: hotel_booking
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    ports:
+      - "5433:5432"
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U postgres -d hotel_booking"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    restart: unless-stopped
+
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    image: hotel-booking-backend:v1
+    container_name: hotel-booking-backend
+
+    env_file:
+      - ./backend/.env
+
+    environment:
+      DATABASE_URL: postgresql://postgres:sre123@database:5432/hotel_booking
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      database:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    image: hotel-booking-frontend:v1
+    container_name: hotel-booking-frontend
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      - backend
+
+    restart: unless-stopped
+
+
+volumes:
+  postgres_data:
