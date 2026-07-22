@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.api.auth_api import router as auth_router
 from app.api.user_api import router as user_router
@@ -14,11 +15,7 @@ app = FastAPI(
 )
 
 
-allowed_origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
-
+# Allow the React frontend to call the backend
 app.add_middleware(
     CORSMiddleware,
     allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
@@ -28,6 +25,7 @@ app.add_middleware(
 )
 
 
+# API routers
 app.include_router(
     auth_router,
     prefix="/api/v1",
@@ -46,6 +44,21 @@ app.include_router(
 app.include_router(
     booking_router,
     prefix="/api/v1",
+)
+
+
+# Prometheus metrics endpoint
+instrumentator = Instrumentator(
+    should_group_status_codes=True,
+    should_ignore_untemplated=True,
+    should_respect_env_var=False,
+    should_instrument_requests_inprogress=True,
+)
+
+instrumentator.instrument(app).expose(
+    app,
+    endpoint="/metrics",
+    include_in_schema=True,
 )
 
 
