@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: hotel-booking-frontend:v1
-          imagePullPolicy: Never
+          image: ayushipwc123/hotel-booking-frontend:latest
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 80
