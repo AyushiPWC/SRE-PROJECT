@@ -31,4 +31,4 @@ postgres_data/
 .pytest_cache/
 .mypy_cache/
 .coverage
-htmlcov/
+htmlcov/action-runner/
