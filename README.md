@@ -192,7 +192,9 @@ kubectl apply -f k8s/
 ------------------------------------------------------------------------
 **# CLOUDFLARED link to access the file:**
 https://rice-deer-metres-array.trycloudflare.com/grafana/ -- grafana
+
 https://rice-deer-metres-array.trycloudflare.com/docs -- Swagger UI
+
 https://rice-deer-metres-array.trycloudflare.com/ -- Hotelp-booking-page
 
 **Used Kind and hosted on the CloudFlared Tunnel, else we can use Cloud service provider as well** 
