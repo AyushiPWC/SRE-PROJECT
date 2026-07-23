@@ -190,25 +190,6 @@ docker compose up -d
 kubectl apply -f k8s/
 ```
 ------------------------------------------------------------------------
-
-# Screenshots
-
-Added Screenshots for: - Application Home:
-(HOME-PAGE.png)
-(LOGIN-PAGE.png)
-(REGISTER-PAGE.png)
-(Booking-confirmation.png)
-(Hotel.png)
-(Checkin-checkout.png)
- Swagger UI :
-(Swagger.png)
- 
-Grafana Dashboard :
-(Dashboard.png)
-Prometheus Targets:
-(target.png)
-
-------------------------------------------------------------------------
 **# CLOUDFLARED link to access the file:**
 https://rice-deer-metres-array.trycloudflare.com/grafana/ -- grafana
 https://rice-deer-metres-array.trycloudflare.com/docs -- Swagger UI
