@@ -67,20 +67,20 @@ with a **self-hosted runner**.
 
 # Technology Stack
 
-  Layer           Technology
-  ---------------  ----------------------------
-  Frontend        React
-  Backend         FastAPI
-  Database        PostgreSQL
-  ORM             SQLAlchemy
-  API Docs        Swagger UI
-  Containers      Docker
-  Orchestration   Kubernetes (Kind)
-  Ingress         NGINX Ingress
-  Monitoring      Prometheus + Grafana
-  CI/CD           GitHub Actions
-  Runner          Self-hosted Windows Runner
-  Public Access   Cloudflare Tunnel
+| Component | Technology |
+|------------|------------|
+| **Frontend** | React |
+| **Backend** | FastAPI |
+| **Database** | PostgreSQL |
+| **ORM** | SQLAlchemy |
+| **API Documentation** | Swagger UI |
+| **Containers** | Docker |
+| **Container Orchestration** | Kubernetes (Kind) |
+| **Ingress Controller** | NGINX Ingress |
+| **Monitoring** | Prometheus + Grafana |
+| **CI/CD Pipeline** | GitHub Actions |
+| **Build Runner** | Self-hosted Windows Runner |
+| **Public Access** | Cloudflare Tunnel |
 
 ------------------------------------------------------------------------
 
