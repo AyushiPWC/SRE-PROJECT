@@ -193,6 +193,8 @@ kubectl apply -f k8s/
 **# CLOUDFLARED link to access the file:**
 https://rice-deer-metres-array.trycloudflare.com/grafana/ -- grafana
 
+{(Username: admin, password:admin123) to access grafana dashboard.}
+
 https://rice-deer-metres-array.trycloudflare.com/docs -- Swagger UI
 
 https://rice-deer-metres-array.trycloudflare.com/ -- Hotelp-booking-page
