@@ -68,7 +68,7 @@ with a **self-hosted runner**.
 # Technology Stack
 
   Layer           Technology
-  --------------- ----------------------------
+  ---------------  ----------------------------
   Frontend        React
   Backend         FastAPI
   Database        PostgreSQL
