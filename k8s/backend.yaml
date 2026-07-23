@@ -1,54 +1,131 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-secret
+  namespace: hotel-booking
+type: Opaque
+stringData:
+  DATABASE_URL: "postgresql://postgres:sre123@postgres:5432/hotel_booking"
+  SECRET_KEY: "hotel_booking_secret_key_2026_change_this_to_a_long_random_value"
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
   namespace: hotel-booking
+  labels:
+    app: backend
+
 spec:
   replicas: 1
+
   selector:
     matchLabels:
       app: backend
+
   template:
     metadata:
       labels:
         app: backend
+
     spec:
+      # Wait until PostgreSQL is ready before starting FastAPI
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+
+          env:
+            - name: PGHOST
+              value: postgres
+
+            - name: PGPORT
+              value: "5432"
+
+            - name: PGUSER
+              value: postgres
+
+            - name: PGPASSWORD
+              value: sre123
+
+            - name: PGDATABASE
+              value: hotel_booking
+
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for PostgreSQL..."
+              until pg_isready \
+                -h "$PGHOST" \
+                -p "$PGPORT" \
+                -U "$PGUSER" \
+                -d "$PGDATABASE";
+              do
+                echo "PostgreSQL is not ready yet..."
+                sleep 5
+              done
+              echo "PostgreSQL is ready."
+
       containers:
         - name: backend
           image: ayushipwc123/hotel-booking-backend:latest
           imagePullPolicy: Always
 
           ports:
-            - containerPort: 8000
+            - name: http
+              containerPort: 8000
+              protocol: TCP
 
           env:
             - name: DATABASE_URL
-              value: "postgresql://postgres:sre123@host.docker.internal:5432/hotel_booking"
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: DATABASE_URL
+
             - name: SECRET_KEY
-              value: "hotel_booking_secret_key_2026_change_this_to_a_long_random_value"
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: SECRET_KEY
+
             - name: ALGORITHM
               value: "HS256"
+
             - name: ACCESS_TOKEN_EXPIRE_MINUTES
               value: "30"
+
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
 
           readinessProbe:
             httpGet:
               path: /
-              port: 8000
-            initialDelaySeconds: 10
+              port: http
+            initialDelaySeconds: 5
             periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
 
           livenessProbe:
             httpGet:
               path: /
-              port: 8000
+              port: http
             initialDelaySeconds: 20
             periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
 
           resources:
             requests:
               memory: "128Mi"
               cpu: "100m"
+
             limits:
               memory: "256Mi"
               cpu: "500m"
@@ -59,9 +136,15 @@ kind: Service
 metadata:
   name: backend
   namespace: hotel-booking
+  labels:
+    app: backend
+
 spec:
+  type: ClusterIP
+
   selector:
     app: backend
+
   ports:
     - port: 8000
       targetPort: 8000
